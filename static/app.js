@@ -73,7 +73,7 @@ const STATUS_LABELS = {
   funding:    'Financement',
   enrolled:   'Inscrit',
   lost:       'Perdu',
-  nurture:    'À relancer',
+  nurture:    'À relancer plus tard',
 };
 
 const CHIP_CLASSES = {
@@ -92,7 +92,7 @@ const KANBAN_COLUMNS = [
   { status: 'contacting', label: 'En contact' },
   { status: 'qualified',  label: 'Qualifié' },
   { status: 'funding',    label: 'Financement' },
-  { status: 'nurture',    label: 'À relancer' },
+  { status: 'nurture',    label: 'À relancer plus tard' },
   { status: 'enrolled',   label: 'Inscrit ✓' },
   { status: 'lost',       label: 'Perdu' },
 ];
