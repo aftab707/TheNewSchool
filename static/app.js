@@ -154,7 +154,7 @@ async function loadReps() {
   state.reps = reps;
   const sel = document.getElementById('rep-select');
   sel.innerHTML = reps.map(r =>
-    `<option value="${r.rep}">${r.rep} (${r.open_leads})</option>`
+    `<option value="${r.rep}" class="notranslate" translate="no">${r.rep} (${r.open_leads})</option>`
   ).join('');
   if (reps.length) {
     state.rep = reps[0].rep;
@@ -164,7 +164,7 @@ async function loadReps() {
   const kSel = document.getElementById('kanban-rep-filter');
   if (kSel) {
     kSel.innerHTML = '<option value="">Tous les commerciaux</option>' +
-      reps.map(r => `<option value="${r.rep}">${r.rep}</option>`).join('');
+      reps.map(r => `<option value="${r.rep}" class="notranslate" translate="no">${r.rep}</option>`).join('');
   }
 }
 
@@ -281,7 +281,7 @@ function renderHeroCard(queue, specificLead = null) {
 
   el.innerHTML = `
     <div class="hero-label">⭐ Prochain lead à contacter</div>
-    <div class="hero-name">${lead.first_name || ''} ${lead.last_name || ''}</div>
+    <div class="hero-name notranslate" translate="no">${lead.first_name || ''} ${lead.last_name || ''}</div>
     <div class="hero-meta">
       <span class="chaleur-badge ${cClass}">🔥 Chaleur ${lead.chaleur}/10</span>
       <span class="chip">${STATUS_LABELS[lead.status] || lead.status}</span>
@@ -431,7 +431,7 @@ function renderLeadRow(lead, index, capacity, isSelected = false) {
   return `
     <div class="lead-row ${marker} ${selectedClass}" data-lead-id="${lead.id}" title="Priorité : ${lead.priority} · Cliquez pour charger dans la carte principale">
       <div class="priority-badge ${pClass}" title="${pLabel}">${pLabel}</div>
-      <div class="lead-name">${lead.first_name || ''} ${lead.last_name || ''}</div>
+      <div class="lead-name notranslate" translate="no">${lead.first_name || ''} ${lead.last_name || ''}</div>
       <div class="lead-chips">${chipsHtml}</div>
       <div class="lead-actions">
         <button class="btn-log-row" data-lead-id="${lead.id}" aria-label="Enregistrer contact pour ${lead.first_name || ''} ${lead.last_name || ''}">
@@ -614,7 +614,7 @@ function renderKanban(leads) {
       card.dataset.leadId = lead.id;
       const pClass = priorityClass(lead.priority || 0);
       card.innerHTML = `
-        <div class="k-name">
+        <div class="k-name notranslate" translate="no">
           <span class="priority-badge ${pClass}" style="display:inline-flex;width:1.5rem;height:1.5rem;font-size:.7rem">
             ${priorityLabel(lead.priority || 0)}
           </span>
@@ -622,7 +622,7 @@ function renderKanban(leads) {
         </div>
         <div class="k-meta">
           <span class="chaleur-badge ${chaleurClass(lead.chaleur)}" style="font-size:.72rem;padding:.1rem .4rem">🔥${lead.chaleur}</span>
-          ${lead.rep} · ${lead.call_count} appel${lead.call_count !== 1 ? 's' : ''}
+          <span class="notranslate" translate="no">${lead.rep}</span> · ${lead.call_count} appel${lead.call_count !== 1 ? 's' : ''}
         </div>
         <div class="k-chips">${renderChips((lead.reasons || []).slice(0, 2))}</div>
       `;
@@ -691,7 +691,7 @@ function renderTeamView(reps, statsAll) {
   const grid = document.getElementById('team-grid');
   grid.innerHTML = reps.map(r => `
     <div class="team-card">
-      <div class="rep-name">👤 ${r.rep}</div>
+      <div class="rep-name notranslate" translate="no">👤 ${r.rep}</div>
       <div class="team-stat-row">
         <span class="label">Leads ouverts</span>
         <span class="val">${r.open_leads}</span>
