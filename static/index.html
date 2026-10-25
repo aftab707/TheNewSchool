@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart CRM — La Nouvelle École</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-brand">
+      <span class="brand-icon">🎓</span>
+      <span class="brand-name">Smart CRM</span>
+      <span class="brand-sub">La Nouvelle École</span>
+    </div>
+    <div class="header-controls">
+      <label for="rep-select" class="sr-only">Commercial</label>
+      <select id="rep-select" class="rep-select">
+        <option value="">Chargement…</option>
+      </select>
+      <span id="today-badge" class="today-badge"></span>
+    </div>
+  </header>
+
+  <!-- ===== TABS ===== -->
+  <nav class="tab-nav" role="tablist">
+    <button class="tab-btn active" data-tab="today" role="tab" aria-selected="true">📋 Aujourd'hui</button>
+    <button class="tab-btn" data-tab="kanban" role="tab" aria-selected="false">📊 Pipeline</button>
+    <button class="tab-btn" data-tab="team" role="tab" aria-selected="false">👥 Équipe</button>
+  </nav>
+
+  <!-- ===== MAIN ===== -->
+  <main>
+
+    <!-- TODAY VIEW -->
+    <section id="tab-today" class="tab-panel active" role="tabpanel">
+      <!-- Quick stats -->
+      <div id="quick-stats" class="quick-stats"></div>
+
+      <!-- Hero card -->
+      <div id="hero-section" class="hero-section">
+        <div id="hero-card" class="hero-card"></div>
+      </div>
+
+      <!-- Queue list -->
+      <div id="queue-list" class="queue-list"></div>
+    </section>
+
+    <!-- KANBAN VIEW -->
+    <section id="tab-kanban" class="tab-panel" role="tabpanel">
+      <div class="kanban-filters">
+        <input type="text" id="kanban-search" class="search-input" placeholder="🔍 Rechercher un lead…" />
+        <select id="kanban-rep-filter" class="rep-select small">
+          <option value="">Tous les commerciaux</option>
+        </select>
+      </div>
+      <div id="kanban-board" class="kanban-board"></div>
+    </section>
+
+    <!-- TEAM VIEW -->
+    <section id="tab-team" class="tab-panel" role="tabpanel">
+      <div class="team-header">
+        <h2>Vue équipe</h2>
+        <p class="team-insight" id="team-insight"></p>
+      </div>
+      <div id="team-grid" class="team-grid"></div>
+    </section>
+
+  </main>
+
+  <!-- ===== TOAST ===== -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ===== MODAL: Log contact ===== -->
+  <div id="log-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <h2 id="modal-title">Enregistrer un contact</h2>
+      <div id="log-form-container"></div>
+      <div class="modal-actions">
+        <button id="modal-cancel" class="btn btn-ghost">Annuler</button>
+        <button id="modal-submit" class="btn btn-primary">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js" type="module"></script>
+</body>
+</html>
