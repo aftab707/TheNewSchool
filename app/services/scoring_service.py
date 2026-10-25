@@ -11,9 +11,9 @@ from app.core import config
 from app.models.schemas import ReasonChip
 
 
-# ---------------------------------------------------------------------------
+
 # Value Calculation (Calcul de la valeur du prospect)
-# ---------------------------------------------------------------------------
+
 
 def compute_value(lead: dict[str, Any]) -> float:
     """
@@ -40,9 +40,9 @@ def compute_value(lead: dict[str, Any]) -> float:
     return min(value, config.VALUE_MAX)
 
 
-# ---------------------------------------------------------------------------
+
 # Urgency Calculation (Calcul de l'urgence temporelle de rappel)
-# ---------------------------------------------------------------------------
+
 
 def compute_urgency(lead: dict[str, Any], today: date) -> float:
     """
@@ -70,9 +70,9 @@ def compute_urgency(lead: dict[str, Any], today: date) -> float:
     return float(urgency)
 
 
-# ---------------------------------------------------------------------------
+
 # Reason Chips Generation (Génération des badges explicatifs 'Pourquoi ce lead')
-# ---------------------------------------------------------------------------
+
 
 def build_reason_chips(
     lead: dict[str, Any],
@@ -169,9 +169,9 @@ def build_reason_chips(
     return chips
 
 
-# ---------------------------------------------------------------------------
+
 # Stop Rule Logic (Règle d'arrêt des relances stériles)
-# ---------------------------------------------------------------------------
+
 
 def _is_at_stop_rule(lead: dict[str, Any]) -> bool:
     """
@@ -183,9 +183,9 @@ def _is_at_stop_rule(lead: dict[str, Any]) -> bool:
     return call_count >= config.STOP_RULE_CALLS and last_outcome not in real_outcomes
 
 
-# ---------------------------------------------------------------------------
+
 # Global Priority Score Calculation (Calcul du score de priorité globale)
-# ---------------------------------------------------------------------------
+
 
 def compute_priority(lead: dict[str, Any], today: date) -> tuple[float, float, float, list[ReasonChip]]:
     """

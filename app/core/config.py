@@ -10,9 +10,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-# ---------------------------------------------------------------------------
+
 # Reference Date Configuration (Configuration de la date de référence)
-# ---------------------------------------------------------------------------
+
 
 def get_today() -> date:
     """
@@ -25,9 +25,9 @@ def get_today() -> date:
     return date.today()
 
 
-# ---------------------------------------------------------------------------
+
 # Scoring Weights (Poids et coefficients pour le calcul de priorité)
-# ---------------------------------------------------------------------------
+
 
 # Weight given to lead value vs contact urgency (Poids accordé à la valeur du lead vs l'urgence de rappel)
 WEIGHT_VALUE: float = 0.55
@@ -57,9 +57,9 @@ STOP_RULE_CALLS: int = 5             # Stop chasing after N fruitless calls (Arr
 HOT_CHALEUR_THRESHOLD: int = 7
 
 
-# ---------------------------------------------------------------------------
+
 # Follow-up Cadence (Délai de suivi par palier de chaleur en jours ouvrés)
-# ---------------------------------------------------------------------------
+
 
 CADENCE: dict[str, int] = {
     "hot":    1,   # Chaleur 8-10: follow-up next business day (Lead chaud : rappel à J+1 ouvré)
@@ -81,9 +81,9 @@ def cadence_days(chaleur: int) -> int:
     return CADENCE["cold"]
 
 
-# ---------------------------------------------------------------------------
+
 # Outcome Specific Follow-ups (Délais spécifiques selon le résultat d'appel)
-# ---------------------------------------------------------------------------
+
 
 OUTCOME_FOLLOWUP_DAYS: dict[str, int | None] = {
     "interested":         2,      # Send quote/info within 2 business days (Envoi de devis sous 2 jours ouvrés)
@@ -98,9 +98,9 @@ OUTCOME_FOLLOWUP_DAYS: dict[str, int | None] = {
 NO_ANSWER_HOT_DAYS: int = 1       # Quick 1-day retry for hot leads after no answer (Relance rapide à 24h pour lead chaud sans réponse)
 
 
-# ---------------------------------------------------------------------------
+
 # Queue Display Settings (Paramètres d'affichage de la file de travail)
-# ---------------------------------------------------------------------------
+
 
 DAILY_CALL_CAPACITY: int = 15     # Max target calls per rep per day (Capacité journalière conseillée par commercial)
 UPCOMING_WINDOW_DAYS: int = 7     # Days ahead to show in upcoming queue (Fenêtre des prochains jours à afficher)
@@ -109,8 +109,8 @@ UPCOMING_WINDOW_DAYS: int = 7     # Days ahead to show in upcoming queue (Fenêt
 FUNDING_PATH_STATUSES: set[str] = {"cpf", "opco", "france_travail", "employer"}
 
 
-# ---------------------------------------------------------------------------
+
 # Database File Path (Chemin du fichier de base de données SQLite)
-# ---------------------------------------------------------------------------
+
 
 DB_PATH: str = os.environ.get("CRM_DB_PATH", "crm.db")

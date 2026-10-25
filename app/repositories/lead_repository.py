@@ -244,6 +244,19 @@ def list_reps(db_path: str = DB_PATH) -> list[dict[str, Any]]:
     return [_row_to_dict(r) for r in rows]
 
 
+def count_all_leads(db_path: str = DB_PATH) -> int:
+    """
+    Count total number of leads in database (Compter le nombre total de leads en base).
+    Gracefully returns 0 if table does not exist yet (Retourne 0 si la table n'existe pas encore).
+    """
+    try:
+        with get_conn(db_path) as conn:
+            row = conn.execute("SELECT COUNT(*) FROM leads").fetchone()
+        return row[0] if row else 0
+    except sqlite3.OperationalError:
+        return 0
+
+
 def count_leads_by_criteria(
     rep: Optional[str],
     today: date,

@@ -97,3 +97,12 @@ class TestSeedImport:
         report = import_csv(csv_path, db_path=db)
         # At least some hot leads with 1 call should be found
         assert report["hot_one_call"] >= 1
+
+    def test_count_all_leads(self, sample_csv, tmp_path):
+        """Should accurately return the total count of leads in database."""
+        from app.services.seed_service import import_csv
+        from app.repositories.lead_repository import count_all_leads
+        db = str(tmp_path / "count.db")
+        assert count_all_leads(db_path=db) == 0
+        import_csv(sample_csv, db_path=db)
+        assert count_all_leads(db_path=db) == 3

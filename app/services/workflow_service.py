@@ -39,8 +39,11 @@ def compute_next_followup(
     # Exact date requested by prospect (Date et heure précises demandées par le prospect)
     if outcome == "callback_requested":
         if callback_at:
-            date_part = callback_at.split("T")[0]
-            return date.fromisoformat(date_part)
+            try:
+                date_part = callback_at.split("T")[0]
+                return date.fromisoformat(date_part)
+            except Exception:
+                pass
         return next_business_day(today, 1)
 
     # 2 business days to send quote/info (2 jours ouvrés pour envoyer devis et programme)

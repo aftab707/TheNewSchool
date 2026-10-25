@@ -7,9 +7,9 @@ from typing import Generator
 
 from app.core.config import DB_PATH
 
-# ---------------------------------------------------------------------------
+
 # Database Schema DDL (Définition des tables de la base de données)
-# ---------------------------------------------------------------------------
+
 
 SCHEMA_SQL = """
 PRAGMA journal_mode=WAL;

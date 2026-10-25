@@ -793,11 +793,25 @@ async function submitLogContact() {
 
   const callbackEl = document.getElementById('modal-callback-at');
   if (callbackEl) {
+    if (_modalOutcome === 'callback_requested' && !callbackEl.value) {
+      callbackEl.focus();
+      showToast(state.lang === 'en' ? '⚠️ Please select a callback date and time.' : '⚠️ Veuillez choisir la date et l\'heure du rappel.');
+      btn.disabled = false;
+      btn.textContent = t('modal_submit');
+      return;
+    }
     body.callback_at = callbackEl.value;
   }
   const lostEl = document.getElementById('modal-lost-reason');
   if (lostEl) {
-    body.lost_reason = lostEl.value;
+    if (_modalOutcome === 'not_interested' && !lostEl.value.trim()) {
+      lostEl.focus();
+      showToast(state.lang === 'en' ? '⚠️ Please specify a reason for loss.' : '⚠️ Veuillez indiquer la raison de la perte.');
+      btn.disabled = false;
+      btn.textContent = t('modal_submit');
+      return;
+    }
+    body.lost_reason = lostEl.value.trim();
   }
   const fundingEl = document.getElementById('modal-funding');
   if (fundingEl && fundingEl.value) {
@@ -807,11 +821,19 @@ async function submitLogContact() {
   try {
     const resp = await API.post(`/api/leads/${_modalLead.id}/log-contact`, body);
     closeLogModal();
-    showToast(resp.toast);
-    await refreshTodayView();
+    const nextDate = resp.lead?.next_followup_date;
+    const baseToast = state.lang === 'en'
+      ? (nextDate ? `Next follow-up: ${formatDate(nextDate)}` : 'Lead closed.')
+      : resp.toast;
+
     if (resp.next_lead) {
-      showToast(`${resp.toast} · Prochain : ${resp.next_lead.first_name || ''} ${resp.next_lead.last_name || ''}`);
+      const nextName = `${resp.next_lead.first_name || ''} ${resp.next_lead.last_name || ''}`.trim();
+      const prefix = state.lang === 'en' ? 'Next' : 'Prochain';
+      showToast(`${baseToast} · ${prefix} : ${nextName}`);
+    } else {
+      showToast(baseToast);
     }
+    await refreshTodayView();
   } catch (e) {
     showToast(`⚠️ Error : ${e.message}`);
   } finally {
@@ -904,15 +926,19 @@ function renderKanban(leads) {
       colEl.classList.remove('drag-over');
       if (!_dragLeadId || status === _dragLeadStatus) return;
 
-      if (status === 'lost') {
-        const reason = prompt(t('prompt_lost_reason'));
-        if (!reason) return;
-        await API.patch(`/api/leads/${_dragLeadId}`, { status, lost_reason: reason });
-      } else {
-        await API.patch(`/api/leads/${_dragLeadId}`, { status });
+      try {
+        if (status === 'lost') {
+          const reason = prompt(t('prompt_lost_reason'));
+          if (!reason) return;
+          await API.patch(`/api/leads/${_dragLeadId}`, { status, lost_reason: reason });
+        } else {
+          await API.patch(`/api/leads/${_dragLeadId}`, { status });
+        }
+        showToast(t('toast_moved', colLabel));
+        await refreshKanban();
+      } catch (err) {
+        showToast(`⚠️ ${err.message}`);
       }
-      showToast(t('toast_moved', colLabel));
-      refreshKanban();
     });
 
     board.appendChild(colEl);

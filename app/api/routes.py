@@ -39,9 +39,9 @@ from app.services.workflow_service import apply_outcome, suggested_channel
 router = APIRouter(prefix="/api", tags=["CRM"])
 
 
-# ---------------------------------------------------------------------------
+
 # Internal Endpoint Helpers (Fonctions d'aide pour les routes)
-# ---------------------------------------------------------------------------
+
 
 def _enrich_lead(lead: dict[str, Any], today: date) -> LeadOut:
     """
@@ -77,9 +77,9 @@ def _toast_message(lead: dict[str, Any]) -> str:
     return "Lead fermé."
 
 
-# ---------------------------------------------------------------------------
+
 # API Endpoints (Points de terminaison API)
-# ---------------------------------------------------------------------------
+
 
 @router.get("/health")
 def health() -> dict[str, str]:

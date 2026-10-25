@@ -1,15 +1,15 @@
-# Smart CRM — La Nouvelle École
+# Smart CRM - La Nouvelle École
 
-> **Job assessment project** by Aftab — La Nouvelle École technical challenge.
+> **Assessment project** by Aftab - La Nouvelle École technical challenge.
 > A focused, functional sales CRM prototype answering the rep's daily question: *"Who do I call right now, and why?"*
 
 ---
 
 ## 1. Overview
 
-La Nouvelle École manages ~100 leads for its training courses (3D printing, drone piloting, CAD modelling). Courses cost ~€1,650–€1,990 and are often funded via CPF/OPCO/France Travail. Four sales reps handle all leads primarily by phone.
+La Nouvelle École manages ~100+ leads for its training courses (3D printing, drone piloting, CAD modelling). Four sales reps handle all leads primarily by phone.
 
-**The core insight from the data:** 38 leads have Chaleur ≥ 7 (hot), yet 27 of them had only 1 call — hot leads are being under-followed while cold leads accumulate excessive contact attempts.
+**The core insight from the data:** 38 leads have Chaleur ≥ 7 (hot), yet 27 of them had only 1 call - hot leads are being under-followed while cold leads accumulate excessive contact attempts.
 
 This CRM replaces a static Airtable export with a prioritised, explainable call queue.
 
@@ -22,7 +22,7 @@ This CRM replaces a static Airtable export with a prioritised, explainable call 
 | Question | Answer |
 |---|---|
 | **WHO** to contact? | Ranked queue per rep, topped by a hero card |
-| **WHEN** | Every lead has a computed `next_followup_date` (business days) — queue shows Overdue / Today / Upcoming |
+| **WHEN** | Every lead has a computed `next_followup_date` (business days) - queue shows Overdue / Today / Upcoming |
 | **WHY this lead?** | Reason chips on every card (e.g. "Chaleur 9/10 · 4 days overdue · only 1 call") |
 | **HOW to stay updated** | Reps log outcome in 2 clicks; the system schedules the next contact automatically |
 
@@ -65,9 +65,9 @@ docker run -p 8000:8000 smart-crm
 
 ## 4. How Prioritisation Works
 
-All weights live in [`app/config.py`](app/config.py) — a manager can tune any number without touching logic.
+All weights live in [`app/core/config.py`](app/core/config.py) - a manager can tune any number without touching logic.
 
-### Value score (0–100) — *"How worth is this lead?"*
+### Value score (0–100) - *"How worth is this lead?"*
 
 ```
 value = chaleur × 10
@@ -77,7 +77,7 @@ value = chaleur × 10
 value = min(value, 100)
 ```
 
-### Urgency score (0–100) — *"How time-critical is contact right now?"*
+### Urgency score (0–100) - *"How time-critical is contact right now?"*
 
 Let `d = today − next_followup_date` (days; positive = overdue):
 
@@ -96,8 +96,8 @@ priority = 0.55 × value + 0.45 × urgency + bonuses
 |---|---|---|
 | Hot lead (Chaleur ≥ 7), 1 call, new/contacting | +15 | "Lead chaud : un seul appel" |
 | Callback promised, due/overdue | +20 | "Rappel demandé" |
-| 3+ consecutive no-answers | × 0.6 | "3 appels sans réponse — essayer un e-mail" |
-| 5+ calls, no real conversation | Excluded from queue | "5 tentatives — passer en nurture" |
+| 3+ consecutive no-answers | × 0.6 | "3 appels sans réponse - essayer un e-mail" |
+| 5+ calls, no real conversation | Excluded from queue | "5 tentatives - passer en nurture" |
 
 ### Cadence (default follow-up interval)
 
@@ -111,7 +111,7 @@ priority = 0.55 × value + 0.45 × urgency + bonuses
 ### Worked example
 
 > **Lead:** Chaleur 8, 1 call (no answer), follow-up was 4 days ago.
-> - Value = 80 (8×10) — no outcome bonuses
+> - Value = 80 (8×10) - no outcome bonuses
 > - Urgency = 60 + 4×5 = **80**
 > - Priority = 0.55×80 + 0.45×80 = **80**
 > - Forgotten-hot bonus: +15 → **95**
@@ -135,26 +135,26 @@ priority = 0.55 × value + 0.45 × urgency + bonuses
 |---|---|
 | **FastAPI + SQLite** | Zero-ops, appropriate for 100-lead prototype; repository layer makes swapping to Postgres/Airtable straightforward |
 | **Vanilla JS** | No framework dependency; organised as modular functions; loads instantly |
-| **Pure functions** (`scoring.py`, `workflow.py`) | Take data + today, return data. No side effects → trivially testable |
-| **Config-driven** (`config.py`) | All weights, thresholds, cadences in one place — business-tunable without touching logic |
-| **Repository layer** (`repository.py`) | Single swap point for future Airtable/Postgres backend |
+| **Pure functions** (`scoring_service.py`, `workflow_service.py`) | Take data + today, return data. No side effects → trivially testable |
+| **Config-driven** (`config.py`) | All weights, thresholds, cadences in one place - business-tunable without touching logic |
+| **Repository layer** (`lead_repository.py`) | Single swap point for future Airtable/Postgres backend |
 | **Deterministic "today"** | `CRM_TODAY` env var overrides `date.today()` → demo and tests are reproducible |
 
 ---
 
 ## 7. Data Notes & Assumptions
 
-- **Chaleur 0–10 assumed** — the client was asked but did not confirm. Isolated in `config.py`; one-line change if the scale differs.
+- **Chaleur 0–10 assumed** - Isolated in `config.py`; one-line change if the scale differs.
 - **CSV quirks handled**: UTF-8 BOM (`utf-8-sig`), `M/D/YYYY` date format, accented characters in email local-parts (light `@`-check only, no ASCII-only validation).
-- **Mock fields generated** deterministically (`random.Random(42)`): `status`, `last_contact_date`, `next_followup_date`, `last_outcome`, `funding_status`, `interactions`. The seed uses the same cadence function as the live app — no separate fake logic. State this clearly: the history is illustrative, not real.
+- **Mock fields generated** deterministically (`random.Random(42)`): `status`, `last_contact_date`, `next_followup_date`, `last_outcome`, `funding_status`, `interactions`. The seed uses the same cadence function as the live app - no separate fake logic. State this clearly: the history is illustrative, not real.
 - **Reference date**: `CRM_TODAY=2026-07-20` (day after the last lead arrival). Without this, every lead looks overdue since the data is from Apr–Jul 2026.
-- **Leads per rep** (original data): Guillaume 34, Adrien 28, Antoine 24, Matthieu 14 — workload imbalance visible in the Team view.
+- **Leads per rep** (original data): Guillaume 34, Adrien 28, Antoine 24, Matthieu 14 - workload imbalance visible in the Team view.
 
 ---
 
 ## 8. Testing
 
-Run with `pytest -v`. ~30 tests across:
+Run with `pytest -v`. 81 automated tests across:
 
 | File | Coverage |
 |---|---|
@@ -184,7 +184,7 @@ Run with `pytest -v`. ~30 tests across:
 3. **Email/SMS templates** triggered on outcome logging
 4. **Calendar integration** (Google Calendar / Outlook) for callback scheduling
 5. **Conversion analytics** once real outcome data accumulates
-6. **ML-assisted scoring** — the rules generate the labelled data needed to train a model
+6. **ML-assisted scoring** - the rules generate the labelled data needed to train a model
 
 ---
 
@@ -195,4 +195,4 @@ Run with `pytest -v`. ~30 tests across:
 | `Chaleur` scale is 0–10 (integer) | Client asked, not confirmed. Isolated in `config.py`. |
 | `status`, `last_contact_date`, `next_followup_date`, etc. not in original data | Added with hiring lead approval. Generated as mock data. |
 | Reference date is `2026-07-20` for demo | Data is Apr–Jul 2026; naive `date.today()` makes everything look overdue. Configurable via `CRM_TODAY` env var. |
-| Business days = Mon–Fri (no holiday skipping by default) | French holidays listed in `calendar_utils.py`, disabled pending confirmation. |
+| Business days = Mon–Fri (no holiday skipping by default) | French holidays listed in `app/services/calendar_service.py`, disabled pending confirmation. |

@@ -10,9 +10,9 @@ from typing import Optional
 from pydantic import BaseModel, field_validator, model_validator
 
 
-# ---------------------------------------------------------------------------
+
 # Business Enums (Énumérations Métier)
-# ---------------------------------------------------------------------------
+
 
 class Status(str, Enum):
     """Pipeline stages (Étapes du pipeline de vente)"""
@@ -54,9 +54,9 @@ class Channel(str, Enum):
     sms = "sms"
 
 
-# ---------------------------------------------------------------------------
+
 # Request Schemas (Schémas de Requête pour l'API)
-# ---------------------------------------------------------------------------
+
 
 class LogContactRequest(BaseModel):
     """
@@ -101,9 +101,9 @@ class PatchLeadRequest(BaseModel):
     lost_reason: Optional[str] = None
 
 
-# ---------------------------------------------------------------------------
+
 # Response Schemas (Schémas de Réponse pour l'API)
-# ---------------------------------------------------------------------------
+
 
 class ReasonChip(BaseModel):
     """Explainable prioritisation chip (Badge explicatif de la priorité)"""
