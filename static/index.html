@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="fr" class="notranslate" translate="no">
+<html lang="fr" id="html-root">
 <head>
   <meta charset="UTF-8" />
-  <meta name="google" content="notranslate" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart CRM — La Nouvelle École</title>
   <link rel="stylesheet" href="/static/styles.css" />
@@ -16,7 +15,11 @@
       <span class="brand-sub">La Nouvelle École</span>
     </div>
     <div class="header-controls">
-      <label for="rep-select" class="sr-only">Commercial</label>
+      <div class="lang-toggle" role="group" aria-label="Langue / Language">
+        <button type="button" class="lang-btn" data-lang="fr" id="btn-lang-fr">🇫🇷 FR</button>
+        <button type="button" class="lang-btn" data-lang="en" id="btn-lang-en">🇬🇧 EN</button>
+      </div>
+      <label for="rep-select" class="sr-only" id="rep-select-label">Commercial</label>
       <select id="rep-select" class="rep-select">
         <option value="">Chargement…</option>
       </select>
@@ -26,9 +29,9 @@
 
   <!-- ===== TABS ===== -->
   <nav class="tab-nav" role="tablist">
-    <button class="tab-btn active" data-tab="today" role="tab" aria-selected="true">📋 Aujourd'hui</button>
-    <button class="tab-btn" data-tab="kanban" role="tab" aria-selected="false">📊 Pipeline</button>
-    <button class="tab-btn" data-tab="team" role="tab" aria-selected="false">👥 Équipe</button>
+    <button class="tab-btn active" data-tab="today" role="tab" aria-selected="true" id="tab-btn-today">📋 Aujourd'hui</button>
+    <button class="tab-btn" data-tab="kanban" role="tab" aria-selected="false" id="tab-btn-kanban">📊 Pipeline</button>
+    <button class="tab-btn" data-tab="team" role="tab" aria-selected="false" id="tab-btn-team">👥 Équipe</button>
   </nav>
 
   <!-- ===== MAIN ===== -->
@@ -49,43 +52,43 @@
         <!-- Sidebar Navigation -->
         <aside class="queue-sidebar" aria-label="Catégories de la file de travail">
           <div class="sidebar-header">
-            <span class="sidebar-title">📁 File de travail</span>
-            <span class="sidebar-desc">Filtrer par urgence de rappel</span>
+            <span class="sidebar-title" id="sidebar-title-text">📁 File de travail</span>
+            <span class="sidebar-desc" id="sidebar-desc-text">Filtrer par urgence de rappel</span>
           </div>
 
           <div class="queue-nav-tabs" role="tablist">
-            <button class="queue-nav-btn active" data-filter="overdue" role="tab" aria-selected="true">
+            <button class="queue-nav-btn active" data-filter="overdue" role="tab" aria-selected="true" id="tab-filter-overdue">
               <span class="q-icon">🚨</span>
-              <span class="q-label">En retard</span>
+              <span class="q-label" id="label-filter-overdue">En retard</span>
               <span class="q-badge badge-danger" id="badge-overdue">0</span>
             </button>
 
-            <button class="queue-nav-btn" data-filter="today" role="tab" aria-selected="false">
+            <button class="queue-nav-btn" data-filter="today" role="tab" aria-selected="false" id="tab-filter-today">
               <span class="q-icon">⚡</span>
-              <span class="q-label">Aujourd'hui</span>
+              <span class="q-label" id="label-filter-today">Aujourd'hui</span>
               <span class="q-badge badge-warning" id="badge-today">0</span>
             </button>
 
-            <button class="queue-nav-btn" data-filter="upcoming" role="tab" aria-selected="false">
+            <button class="queue-nav-btn" data-filter="upcoming" role="tab" aria-selected="false" id="tab-filter-upcoming">
               <span class="q-icon">📅</span>
-              <span class="q-label">À venir</span>
+              <span class="q-label" id="label-filter-upcoming">À venir</span>
               <span class="q-badge badge-info" id="badge-upcoming">0</span>
             </button>
 
-            <button class="queue-nav-btn" data-filter="all" role="tab" aria-selected="false">
+            <button class="queue-nav-btn" data-filter="all" role="tab" aria-selected="false" id="tab-filter-all">
               <span class="q-icon">📋</span>
-              <span class="q-label">Tous les leads</span>
+              <span class="q-label" id="label-filter-all">Tous les leads</span>
               <span class="q-badge badge-neutral" id="badge-all">0</span>
             </button>
           </div>
 
           <div class="queue-search-wrapper">
-            <label for="queue-search" class="sr-only">Filtrer les leads</label>
+            <label for="queue-search" class="sr-only" id="queue-search-label">Filtrer les leads</label>
             <input type="text" id="queue-search" class="queue-search-input" placeholder="🔍 Filtrer par nom ou e-mail…" />
           </div>
 
           <div class="sidebar-footer-hint">
-            💡 <span>Cliquez sur un prospect dans la liste pour charger ses détails directement dans la carte du haut.</span>
+            💡 <span id="sidebar-hint-text">Cliquez sur un prospect dans la liste pour charger ses détails directement dans la carte du haut.</span>
           </div>
         </aside>
 
@@ -123,7 +126,7 @@
     <!-- TEAM VIEW -->
     <section id="tab-team" class="tab-panel" role="tabpanel">
       <div class="team-header">
-        <h2>Vue équipe</h2>
+        <h2 id="team-heading-text">Vue équipe</h2>
         <p class="team-insight" id="team-insight"></p>
       </div>
       <div id="team-grid" class="team-grid"></div>
