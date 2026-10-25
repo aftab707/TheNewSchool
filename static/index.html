@@ -43,8 +43,69 @@
         <div id="hero-card" class="hero-card"></div>
       </div>
 
-      <!-- Queue list -->
-      <div id="queue-list" class="queue-list"></div>
+      <!-- Queue Explorer (Sidebar + Sub-tabs + Filterable Scrollable List) -->
+      <div class="queue-workspace">
+        <!-- Sidebar Navigation -->
+        <aside class="queue-sidebar" aria-label="Catégories de la file de travail">
+          <div class="sidebar-header">
+            <span class="sidebar-title">📁 File de travail</span>
+            <span class="sidebar-desc">Filtrer par urgence de rappel</span>
+          </div>
+
+          <div class="queue-nav-tabs" role="tablist">
+            <button class="queue-nav-btn active" data-filter="overdue" role="tab" aria-selected="true">
+              <span class="q-icon">🚨</span>
+              <span class="q-label">En retard</span>
+              <span class="q-badge badge-danger" id="badge-overdue">0</span>
+            </button>
+
+            <button class="queue-nav-btn" data-filter="today" role="tab" aria-selected="false">
+              <span class="q-icon">⚡</span>
+              <span class="q-label">Aujourd'hui</span>
+              <span class="q-badge badge-warning" id="badge-today">0</span>
+            </button>
+
+            <button class="queue-nav-btn" data-filter="upcoming" role="tab" aria-selected="false">
+              <span class="q-icon">📅</span>
+              <span class="q-label">À venir</span>
+              <span class="q-badge badge-info" id="badge-upcoming">0</span>
+            </button>
+
+            <button class="queue-nav-btn" data-filter="all" role="tab" aria-selected="false">
+              <span class="q-icon">📋</span>
+              <span class="q-label">Tous les leads</span>
+              <span class="q-badge badge-neutral" id="badge-all">0</span>
+            </button>
+          </div>
+
+          <div class="queue-search-wrapper">
+            <label for="queue-search" class="sr-only">Filtrer les leads</label>
+            <input type="text" id="queue-search" class="queue-search-input" placeholder="🔍 Filtrer par nom ou e-mail…" />
+          </div>
+
+          <div class="sidebar-footer-hint">
+            💡 <span>Cliquez sur un prospect dans la liste pour charger ses détails directement dans la carte du haut.</span>
+          </div>
+        </aside>
+
+        <!-- Main Panel: Selected Category List -->
+        <div class="queue-main-panel">
+          <div class="queue-panel-header">
+            <div class="panel-header-left">
+              <h3 id="queue-active-title" class="panel-title">🚨 En retard (Overdue)</h3>
+              <p id="queue-active-desc" class="panel-desc">Prospects dont la date de relance est dépassée</p>
+            </div>
+            <div class="panel-header-right">
+              <span id="queue-showing-count" class="showing-count">0 leads</span>
+            </div>
+          </div>
+
+          <!-- Scrollable Leads Container (Prevents Infinite Page Scroll) -->
+          <div id="queue-scroll-container" class="queue-scroll-container">
+            <div id="queue-list" class="queue-list"></div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- KANBAN VIEW -->

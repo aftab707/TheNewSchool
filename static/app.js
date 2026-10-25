@@ -49,6 +49,8 @@ const state = {
   stats: null,
   teamData: [],
   currentHeroLeadId: null,
+  activeQueueFilter: 'overdue', // 'overdue' | 'today' | 'upcoming' | 'all'
+  queueSearchQuery: '',
 };
 
 // ============================================================
@@ -193,6 +195,7 @@ async function refreshTodayView() {
       `📅 ${formatDate(queue.today)}`;
 
     renderQuickStats(stats);
+    renderQueueSidebar(queue);
     renderHeroCard(queue);
     renderQueueList(queue);
   } catch (e) {
@@ -217,13 +220,47 @@ function renderQuickStats(stats) {
   `).join('');
 }
 
-function renderHeroCard(queue) {
+function renderQueueSidebar(queue) {
+  const overdueCount = queue.groups.find(g => g.group === 'overdue')?.leads.length || 0;
+  const todayCount = queue.groups.find(g => g.group === 'today')?.leads.length || 0;
+  const upcomingCount = queue.groups.find(g => g.group === 'upcoming')?.leads.length || 0;
+  const totalCount = overdueCount + todayCount + upcomingCount;
+
+  // Update badges
+  const bOverdue = document.getElementById('badge-overdue');
+  const bToday = document.getElementById('badge-today');
+  const bUpcoming = document.getElementById('badge-upcoming');
+  const bAll = document.getElementById('badge-all');
+
+  if (bOverdue) bOverdue.textContent = overdueCount;
+  if (bToday) bToday.textContent = todayCount;
+  if (bUpcoming) bUpcoming.textContent = upcomingCount;
+  if (bAll) bAll.textContent = totalCount;
+
+  // If current active filter has 0 leads, intelligently default to the one with leads
+  if (state.activeQueueFilter === 'today' && todayCount === 0 && overdueCount > 0) {
+    state.activeQueueFilter = 'overdue';
+  } else if (state.activeQueueFilter === 'overdue' && overdueCount === 0 && todayCount > 0) {
+    state.activeQueueFilter = 'today';
+  }
+
+  // Update active class on buttons
+  document.querySelectorAll('.queue-nav-btn').forEach(btn => {
+    const isActive = btn.dataset.filter === state.activeQueueFilter;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+  });
+}
+
+function renderHeroCard(queue, specificLead = null) {
   const el = document.getElementById('hero-card');
 
-  // Find the top lead (first of overdue, then today, then upcoming)
-  let lead = null;
-  for (const group of queue.groups) {
-    if (group.leads.length) { lead = group.leads[0]; break; }
+  // Use specific lead if clicked by user, otherwise find top lead
+  let lead = specificLead;
+  if (!lead) {
+    for (const group of queue.groups) {
+      if (group.leads.length) { lead = group.leads[0]; break; }
+    }
   }
   state.currentHeroLeadId = lead ? lead.id : null;
 
@@ -269,32 +306,111 @@ function renderHeroCard(queue) {
 
 function renderQueueList(queue) {
   const el = document.getElementById('queue-list');
-  if (!queue.groups.every(g => g.leads.length === 0)) {
-    const groupClasses = { overdue: 'overdue', today: 'today', upcoming: 'upcoming' };
-    el.innerHTML = queue.groups.map(group => {
-      if (!group.leads.length) return '';
-      return `
-        <div class="queue-group">
-          <div class="queue-group-title ${groupClasses[group.group]}">
-            ${group.label_fr}
-            <span class="group-count">${group.leads.length}</span>
-          </div>
-          ${group.leads.map((lead, i) => renderLeadRow(lead, i, queue.daily_capacity)).join('')}
-        </div>`;
-    }).join('');
+  const titleEl = document.getElementById('queue-active-title');
+  const descEl = document.getElementById('queue-active-desc');
+  const countEl = document.getElementById('queue-showing-count');
 
-    // Bind row buttons
-    el.querySelectorAll('.btn-log-row').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const leadId = parseInt(btn.dataset.leadId);
-        const lead = findLeadInQueue(queue, leadId);
-        if (lead) openLogModal(lead, 'no_answer');
-      });
-    });
-  } else {
-    el.innerHTML = '';
+  if (!queue || !queue.groups) {
+    if (el) el.innerHTML = '';
+    return;
   }
+
+  // 1. Filter leads by selected sidebar tab
+  let currentGroupLeads = [];
+  let title = '';
+  let desc = '';
+
+  if (state.activeQueueFilter === 'overdue') {
+    currentGroupLeads = queue.groups.find(g => g.group === 'overdue')?.leads || [];
+    title = '🚨 En retard (Overdue)';
+    desc = 'Prospects dont la date de relance prévue est déjà dépassée.';
+  } else if (state.activeQueueFilter === 'today') {
+    currentGroupLeads = queue.groups.find(g => g.group === 'today')?.leads || [];
+    title = '⚡ À contacter aujourd\'hui (Today)';
+    desc = 'Prospects prévus pour un contact dans la journée.';
+  } else if (state.activeQueueFilter === 'upcoming') {
+    currentGroupLeads = queue.groups.find(g => g.group === 'upcoming')?.leads || [];
+    title = '📅 À venir (Upcoming)';
+    desc = 'Prospects programmés dans les 7 prochains jours.';
+  } else {
+    // 'all'
+    currentGroupLeads = queue.groups.flatMap(g => g.leads);
+    title = '📋 Tous les leads de la file';
+    desc = 'Tous les prospects actifs triés par score de priorité.';
+  }
+
+  // 2. Filter by search query if user typed something in queue search
+  let displayLeads = currentGroupLeads;
+  if (state.queueSearchQuery) {
+    const q = state.queueSearchQuery.toLowerCase();
+    displayLeads = currentGroupLeads.filter(l =>
+      (l.first_name && l.first_name.toLowerCase().includes(q)) ||
+      (l.last_name && l.last_name.toLowerCase().includes(q)) ||
+      (l.email && l.email.toLowerCase().includes(q))
+    );
+  }
+
+  // 3. Update titles and counts in UI header
+  if (titleEl) titleEl.textContent = title;
+  if (descEl) descEl.textContent = desc;
+  if (countEl) countEl.textContent = `${displayLeads.length} prospect${displayLeads.length > 1 ? 's' : ''}`;
+
+  // 4. Render empty state if no leads
+  if (!displayLeads.length) {
+    let emptyMsg = 'Aucun prospect dans cette catégorie.';
+    if (state.activeQueueFilter === 'overdue') {
+      emptyMsg = '🎉 Bravo ! Aucun prospect en retard dans votre file.';
+    } else if (state.activeQueueFilter === 'today') {
+      emptyMsg = '☀️ Aucun appel planifié pour aujourd\'hui.';
+    } else if (state.activeQueueFilter === 'upcoming') {
+      emptyMsg = '📅 Aucun rappel programmé pour les 7 prochains jours.';
+    } else if (state.queueSearchQuery) {
+      emptyMsg = `🔍 Aucun résultat trouvé pour "${state.queueSearchQuery}".`;
+    }
+
+    el.innerHTML = `
+      <div class="empty-state" style="padding: 2rem 1rem;">
+        <span class="emoji">✨</span>
+        <p>${emptyMsg}</p>
+      </div>`;
+    return;
+  }
+
+  // 5. Render lead rows
+  el.innerHTML = displayLeads.map((lead, i) =>
+    renderLeadRow(lead, i, queue.daily_capacity, lead.id === state.currentHeroLeadId)
+  ).join('');
+
+  // 6. Bind click events on rows to preview/focus on Hero Card
+  el.querySelectorAll('.lead-row').forEach(row => {
+    row.addEventListener('click', (e) => {
+      // Don't trigger if clicked directly on the Contacter button
+      if (e.target.closest('.btn-log-row')) return;
+      const leadId = parseInt(row.dataset.leadId);
+      const lead = findLeadInQueue(queue, leadId);
+      if (lead) {
+        // Highlight row
+        el.querySelectorAll('.lead-row').forEach(r => r.classList.remove('selected-lead'));
+        row.classList.add('selected-lead');
+        // Update hero card
+        renderHeroCard(queue, lead);
+        // Smooth scroll hero card into view on mobile
+        if (window.innerWidth <= 860) {
+          document.getElementById('hero-section').scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+  });
+
+  // 7. Bind Contacter button to open modal
+  el.querySelectorAll('.btn-log-row').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const leadId = parseInt(btn.dataset.leadId);
+      const lead = findLeadInQueue(queue, leadId);
+      if (lead) openLogModal(lead, 'no_answer');
+    });
+  });
 }
 
 function findLeadInQueue(queue, leadId) {
@@ -305,13 +421,15 @@ function findLeadInQueue(queue, leadId) {
   return null;
 }
 
-function renderLeadRow(lead, index, capacity) {
+function renderLeadRow(lead, index, capacity, isSelected = false) {
   const pClass = priorityClass(lead.priority);
   const pLabel = priorityLabel(lead.priority);
   const chipsHtml = renderChips(lead.reasons.slice(0, 3));
   const marker = index === capacity ? 'capacity-marker' : '';
+  const selectedClass = isSelected ? 'selected-lead' : '';
+
   return `
-    <div class="lead-row ${marker}" title="Priorité : ${lead.priority}">
+    <div class="lead-row ${marker} ${selectedClass}" data-lead-id="${lead.id}" title="Priorité : ${lead.priority} · Cliquez pour charger dans la carte principale">
       <div class="priority-badge ${pClass}" title="${pLabel}">${pLabel}</div>
       <div class="lead-name">${lead.first_name || ''} ${lead.last_name || ''}</div>
       <div class="lead-chips">${chipsHtml}</div>
@@ -650,10 +768,42 @@ function setupKanbanFilters() {
 }
 
 // ============================================================
+// QUEUE SIDEBAR & SEARCH EVENTS
+// ============================================================
+function setupQueueEvents() {
+  // Sidebar category buttons
+  document.querySelectorAll('.queue-nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.activeQueueFilter = btn.dataset.filter;
+      document.querySelectorAll('.queue-nav-btn').forEach(b => {
+        const isSelected = b === btn;
+        b.classList.toggle('active', isSelected);
+        b.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+      });
+      if (state.queueData) {
+        renderQueueList(state.queueData);
+      }
+    });
+  });
+
+  // Search filter inside queue
+  const queueSearchInput = document.getElementById('queue-search');
+  if (queueSearchInput) {
+    queueSearchInput.addEventListener('input', (e) => {
+      state.queueSearchQuery = e.target.value.trim();
+      if (state.queueData) {
+        renderQueueList(state.queueData);
+      }
+    });
+  }
+}
+
+// ============================================================
 // INIT
 // ============================================================
 async function init() {
   setupTabs();
+  setupQueueEvents();
   setupModalEvents();
   setupKanbanFilters();
 

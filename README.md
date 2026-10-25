@@ -31,10 +31,15 @@ This CRM replaces a static Airtable export with a prioritised, explainable call 
 ## 3. Quick Start
 
 ```bash
-# 1. Clone & install
-git clone <repo-url>
-cd smart-crm
-python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+# 1. Clone & install (Cloner et installer le projet)
+git clone https://github.com/aftab707/TheNewSchool.git
+cd TheNewSchool
+python -m venv .venv
+
+# Activate virtualenv (Activer l'environnement virtuel)
+# Windows (PowerShell): .venv\Scripts\Activate.ps1
+# Linux / macOS:        source .venv/bin/activate
+
 pip install -r requirements.txt
 
 # 2. Configure demo date (data is Apr–Jul 2026)
