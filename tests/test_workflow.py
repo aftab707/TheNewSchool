@@ -5,7 +5,7 @@ from datetime import date
 
 os.environ.setdefault("CRM_TODAY", "2026-07-20")
 
-from app.workflow import apply_outcome, compute_next_followup, new_status_after_outcome
+from app.services.workflow_service import apply_outcome, compute_next_followup, new_status_after_outcome
 
 
 TODAY = date(2026, 7, 20)
@@ -72,22 +72,22 @@ class TestNewStatus:
 class TestNextFollowup:
     def test_no_answer_hot_lead_1_day(self):
         nfd = compute_next_followup(chaleur=9, outcome="no_answer", callback_at=None, today=TODAY)
-        from app.calendar_utils import next_business_day
+        from app.services.calendar_service import next_business_day
         assert nfd == next_business_day(TODAY, 1)
 
     def test_no_answer_warm_lead_cadence(self):
-        from app.config import cadence_days
-        from app.calendar_utils import next_business_day
+        from app.core.config import cadence_days
+        from app.services.calendar_service import next_business_day
         nfd = compute_next_followup(chaleur=5, outcome="no_answer", callback_at=None, today=TODAY)
         assert nfd == next_business_day(TODAY, cadence_days(5))
 
     def test_interested_2_days(self):
-        from app.calendar_utils import next_business_day
+        from app.services.calendar_service import next_business_day
         nfd = compute_next_followup(chaleur=5, outcome="interested", callback_at=None, today=TODAY)
         assert nfd == next_business_day(TODAY, 2)
 
     def test_needs_funding_3_days(self):
-        from app.calendar_utils import next_business_day
+        from app.services.calendar_service import next_business_day
         nfd = compute_next_followup(chaleur=5, outcome="needs_funding_info", callback_at=None, today=TODAY)
         assert nfd == next_business_day(TODAY, 3)
 

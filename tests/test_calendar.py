@@ -3,7 +3,7 @@ import os
 import pytest
 from datetime import date
 
-from app.calendar_utils import next_business_day, is_business_day
+from app.services.calendar_service import next_business_day, is_business_day
 
 
 class TestIsBusinessDay:

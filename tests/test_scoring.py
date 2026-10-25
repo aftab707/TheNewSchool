@@ -5,7 +5,7 @@ from datetime import date
 
 os.environ.setdefault("CRM_TODAY", "2026-07-20")
 
-from app.scoring import compute_value, compute_urgency, compute_priority, should_exclude_from_queue
+from app.services.scoring_service import compute_value, compute_urgency, compute_priority, should_exclude_from_queue
 
 
 def make_lead(**kwargs):

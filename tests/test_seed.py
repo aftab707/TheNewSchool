@@ -37,7 +37,7 @@ def bad_csv(tmp_path):
 class TestSeedImport:
     def test_bom_handled(self, sample_csv, tmp_path):
         """Should import 3 rows despite UTF-8 BOM."""
-        from app.seed import import_csv
+        from app.services.seed_service import import_csv
         db = str(tmp_path / "test.db")
         report = import_csv(sample_csv, db_path=db)
         assert report["ok"] == 3
@@ -45,8 +45,8 @@ class TestSeedImport:
 
     def test_accents_preserved(self, sample_csv, tmp_path):
         """Email with accents should be stored as-is."""
-        from app.seed import import_csv
-        from app.repository import get_lead_by_email
+        from app.services.seed_service import import_csv
+        from app.repositories.lead_repository import get_lead_by_email
         db = str(tmp_path / "test.db")
         import_csv(sample_csv, db_path=db)
         lead = get_lead_by_email("chloé.bernard@example.com", db_path=db)
@@ -55,7 +55,7 @@ class TestSeedImport:
 
     def test_100_rows_imported(self, tmp_path):
         """Full CSV should produce exactly 100 leads."""
-        from app.seed import import_csv
+        from app.services.seed_service import import_csv
         db = str(tmp_path / "full.db")
         csv_path = os.path.join(
             os.path.dirname(__file__), "..", "data", "Grid_view.csv"
@@ -68,8 +68,8 @@ class TestSeedImport:
 
     def test_idempotent_reimport(self, sample_csv, tmp_path):
         """Re-running import should not duplicate leads."""
-        from app.seed import import_csv
-        from app.repository import list_leads
+        from app.services.seed_service import import_csv
+        from app.repositories.lead_repository import list_leads
         db = str(tmp_path / "idem.db")
         import_csv(sample_csv, db_path=db)
         import_csv(sample_csv, db_path=db)
@@ -78,7 +78,7 @@ class TestSeedImport:
 
     def test_invalid_row_reported(self, bad_csv, tmp_path):
         """Invalid email row should be skipped with a reason."""
-        from app.seed import import_csv
+        from app.services.seed_service import import_csv
         db = str(tmp_path / "bad.db")
         report = import_csv(bad_csv, db_path=db)
         assert report["ok"] == 1
@@ -87,7 +87,7 @@ class TestSeedImport:
 
     def test_hot_one_call_count(self, tmp_path):
         """Should correctly count hot leads (chaleur>=7) with only 1 call."""
-        from app.seed import import_csv
+        from app.services.seed_service import import_csv
         db = str(tmp_path / "hot.db")
         csv_path = os.path.join(
             os.path.dirname(__file__), "..", "data", "Grid_view.csv"

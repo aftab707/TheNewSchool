@@ -11,21 +11,21 @@ from fastapi.testclient import TestClient
 @pytest.fixture(scope="module")
 def seeded_db(tmp_path_factory):
     """Create a fresh seeded database for API tests."""
-    import app.config as cfg
+    import app.core.config as cfg
     db_path = str(tmp_path_factory.mktemp("db") / "test_api.db")
     os.environ["CRM_DB_PATH"] = db_path
 
     # Re-import config to pick up the new DB_PATH
     import importlib
-    import app.db
-    importlib.reload(app.db)
-    import app.repository
-    importlib.reload(app.repository)
+    import app.core.database
+    importlib.reload(app.core.database)
+    import app.repositories.lead_repository
+    importlib.reload(app.repositories.lead_repository)
 
-    from app.db import init_db
+    from app.core.database import init_db
     init_db(db_path)
 
-    from app.repository import upsert_lead
+    from app.repositories.lead_repository import upsert_lead
     # Insert a few test leads
     leads_data = [
         {
@@ -63,7 +63,7 @@ def seeded_db(tmp_path_factory):
 
 @pytest.fixture(scope="module")
 def client(seeded_db):
-    import app.config as cfg
+    import app.core.config as cfg
     import importlib
     import app.main
     importlib.reload(app.main)
