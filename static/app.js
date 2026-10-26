@@ -4,9 +4,9 @@
  * Fully bilingual (FR / EN toggle) with proper-name preservation.
  */
 
-// ============================================================
+
 // API helpers
-// ============================================================
+
 const API = {
   async get(path) {
     const r = await fetch(path);
@@ -39,9 +39,9 @@ const API = {
   },
 };
 
-// ============================================================
+
 // State
-// ============================================================
+
 const state = {
   lang: localStorage.getItem('crm_lang') || 'en', // Default to EN for ease of use, with one-click FR
   rep: '',
@@ -55,9 +55,9 @@ const state = {
   queueSearchQuery: '',
 };
 
-// ============================================================
+
 // i18n Dictionary (FR / EN)
-// ============================================================
+
 const I18N = {
   fr: {
     today_tab: "📋 Aujourd'hui",
@@ -279,9 +279,9 @@ const KANBAN_STATUSES = [
   'lost',
 ];
 
-// ============================================================
+
 // Utility
-// ============================================================
+
 function chaleurClass(c) {
   if (c >= 8) return 'c-hot';
   if (c >= 5) return 'c-warm';
@@ -332,9 +332,9 @@ function formatDate(iso) {
   return d.toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-// ============================================================
+
 // Language Switcher
-// ============================================================
+
 function setLanguage(lang) {
   if (lang !== 'fr' && lang !== 'en') return;
   state.lang = lang;
@@ -403,9 +403,9 @@ function updateStaticLabels() {
   }
 }
 
-// ============================================================
+
 // Rep selector
-// ============================================================
+
 async function loadReps() {
   const reps = await API.get('/api/reps');
   state.reps = reps;
@@ -430,9 +430,9 @@ async function onRepChange() {
   await refreshTodayView();
 }
 
-// ============================================================
+
 // TODAY VIEW
-// ============================================================
+
 async function refreshTodayView() {
   if (!state.rep) return;
   setLoading('quick-stats', '');
@@ -697,9 +697,9 @@ function renderLeadRow(lead, index, capacity, isSelected = false) {
     </div>`;
 }
 
-// ============================================================
+
 // LOG CONTACT MODAL
-// ============================================================
+
 let _modalLead = null;
 let _modalOutcome = null;
 
@@ -842,9 +842,9 @@ async function submitLogContact() {
   }
 }
 
-// ============================================================
+
 // KANBAN VIEW
-// ============================================================
+
 let _dragLeadId = null;
 let _dragLeadStatus = null;
 let _kanbanRep = '';
@@ -949,9 +949,9 @@ function renderKanban(leads) {
   }
 }
 
-// ============================================================
+
 // TEAM VIEW
-// ============================================================
+
 async function refreshTeamView() {
   const el = document.getElementById('team-grid');
   el.innerHTML = `<div class="loading">${t('rep_loading')}</div>`;
@@ -998,9 +998,9 @@ function renderTeamView(reps, statsAll) {
   `).join('');
 }
 
-// ============================================================
+
 // TAB NAVIGATION
-// ============================================================
+
 function setupTabs() {
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1021,9 +1021,9 @@ function setupTabs() {
   });
 }
 
-// ============================================================
+
 // MODAL & FORM EVENTS
-// ============================================================
+
 function setupModalEvents() {
   document.getElementById('modal-cancel').addEventListener('click', closeLogModal);
   document.getElementById('modal-submit').addEventListener('click', submitLogContact);
@@ -1035,9 +1035,9 @@ function setupModalEvents() {
   });
 }
 
-// ============================================================
+
 // KANBAN FILTER EVENTS
-// ============================================================
+
 function setupKanbanFilters() {
   document.getElementById('kanban-search').addEventListener('input', (e) => {
     _kanbanSearch = e.target.value.trim();
@@ -1049,9 +1049,9 @@ function setupKanbanFilters() {
   });
 }
 
-// ============================================================
+
 // QUEUE SIDEBAR & SEARCH EVENTS
-// ============================================================
+
 function setupQueueEvents() {
   // Sidebar category buttons
   document.querySelectorAll('.queue-nav-btn').forEach(btn => {
@@ -1080,9 +1080,9 @@ function setupQueueEvents() {
   }
 }
 
-// ============================================================
+
 // INIT
-// ============================================================
+
 async function init() {
   setupTabs();
   setupQueueEvents();

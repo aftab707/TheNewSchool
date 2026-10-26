@@ -1,6 +1,6 @@
-/* ===== Smart CRM — La Nouvelle École ===== */
+/*  Smart CRM — La Nouvelle École  */
 
-/* --- Variables & Reset --- */
+/*  Variables & Reset  */
 :root {
   --c-bg: #f4f6fb;
   --c-surface: #ffffff;
@@ -30,14 +30,14 @@ body {
   min-height: 100vh;
 }
 
-/* --- Screen-reader only --- */
+/*  Screen-reader only  */
 .sr-only {
   position: absolute; width: 1px; height: 1px;
   padding: 0; margin: -1px; overflow: hidden;
   clip: rect(0,0,0,0); white-space: nowrap; border: 0;
 }
 
-/* ===== HEADER ===== */
+/*  HEADER  */
 .app-header {
   background: var(--c-surface);
   border-bottom: 1px solid var(--c-border);
@@ -104,7 +104,7 @@ body {
   white-space: nowrap;
 }
 
-/* ===== TABS ===== */
+/*  TABS  */
 .tab-nav {
   display: flex;
   gap: .25rem;
@@ -129,7 +129,7 @@ body {
 .tab-panel { display: none; padding: 1.25rem 1.5rem; }
 .tab-panel.active { display: block; }
 
-/* ===== QUICK STATS ===== */
+/*  QUICK STATS  */
 .quick-stats {
   display: flex; flex-wrap: wrap; gap: .75rem;
   margin-bottom: 1.25rem;
@@ -148,7 +148,7 @@ body {
 .stat-chip.warning .num { color: var(--c-p2); }
 .stat-chip.info .num { color: var(--c-primary); }
 
-/* ===== HERO CARD ===== */
+/*  HERO CARD  */
 .hero-section { margin-bottom: 2rem; }
 
 .hero-card {
@@ -209,7 +209,7 @@ body {
   color: var(--c-muted); font-size: 1.1rem;
 }
 
-/* ===== QUEUE WORKSPACE (SIDEBAR + CONTENT) ===== */
+/*  QUEUE WORKSPACE (SIDEBAR + CONTENT)  */
 .queue-workspace {
   display: flex;
   gap: 1.5rem;
@@ -389,7 +389,7 @@ body {
   background: #94a3b8;
 }
 
-/* ===== QUEUE LIST ROWS ===== */
+/*  QUEUE LIST ROWS  */
 .queue-group { margin-bottom: 1rem; }
 .queue-group-title {
   font-size: .75rem; font-weight: 700; letter-spacing: .08em;
@@ -440,7 +440,7 @@ body {
 .btn-log-row:hover { background: var(--c-primary-dark); transform: translateY(-1px); }
 .btn-log-row:active { transform: translateY(0); }
 
-/* ===== KANBAN ===== */
+/*  KANBAN  */
 .kanban-filters {
   display: flex; gap: .75rem; margin-bottom: 1rem; flex-wrap: wrap;
 }
@@ -485,7 +485,7 @@ body {
 .kanban-card .k-meta { color: var(--c-muted); font-size: .78rem; margin-bottom: .35rem; }
 .kanban-card .k-chips { display: flex; flex-wrap: wrap; gap: .25rem; }
 
-/* ===== TEAM VIEW ===== */
+/*  TEAM VIEW  */
 .team-header { margin-bottom: 1.25rem; }
 .team-header h2 { font-size: 1.3rem; font-weight: 700; }
 .team-insight {
@@ -514,7 +514,7 @@ body {
 .team-stat-row .val.danger { color: var(--c-p1); }
 .team-stat-row .val.warn   { color: var(--c-p2); }
 
-/* ===== MODAL ===== */
+/*  MODAL  */
 .modal-backdrop {
   position: fixed; inset: 0; background: rgba(0,0,0,.4);
   display: flex; align-items: center; justify-content: center;
@@ -537,7 +537,7 @@ body {
 .form-control:focus { border-color: var(--c-primary); }
 .modal-actions { display: flex; gap: .5rem; justify-content: flex-end; margin-top: 1rem; }
 
-/* ===== BUTTONS ===== */
+/*  BUTTONS  */
 .btn {
   padding: .5rem 1.1rem; border-radius: var(--radius); font-size: .9rem;
   font-weight: 600; cursor: pointer; border: 1px solid transparent;
@@ -548,7 +548,7 @@ body {
 .btn-ghost { background: transparent; color: var(--c-muted); border-color: var(--c-border); }
 .btn-ghost:hover { background: var(--c-bg); }
 
-/* ===== TOAST ===== */
+/*  TOAST  */
 .toast {
   position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(4rem);
   background: #1a202c; color: #fff; border-radius: var(--radius);
@@ -559,12 +559,12 @@ body {
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ===== LOADING / EMPTY ===== */
+/*  LOADING / EMPTY  */
 .loading { text-align: center; color: var(--c-muted); padding: 2rem; font-size: .95rem; }
 .empty-state { text-align: center; padding: 3rem 1rem; color: var(--c-muted); }
 .empty-state .emoji { font-size: 3rem; display: block; margin-bottom: .75rem; }
 
-/* ===== RESPONSIVE ===== */
+/*  RESPONSIVE  */
 @media (max-width: 860px) {
   .queue-workspace {
     flex-direction: column;

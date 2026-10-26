@@ -122,9 +122,9 @@ priority = 0.55 × value + 0.45 × urgency + bonuses
 ## 5. Product Decisions
 
 - **7 pipeline statuses** (new → contacting → qualified → funding → enrolled/lost/nurture) reflect the actual sales flow including CPF/OPCO funding, the most common blocker.
-- **New fields added** (approved by hiring lead): `status`, `last_contact_date`, `next_followup_date`, `last_outcome`, `funding_status`, `consecutive_no_answer`, `lost_reason`, `notes`, plus an `interactions` table for full history.
+- **New fields added** (approved by team lead(Masy)): `status`, `last_contact_date`, `next_followup_date`, `last_outcome`, `funding_status`, `consecutive_no_answer`, `lost_reason`, `notes`, plus an `interactions` table for full history.
 - **Outcome-driven automation**: logging a call *is* scheduling the next contact. Reps never edit dates by hand.
-- **French UI** labels (company is French); code identifiers stay in English.
+- **French UI** labels; code identifiers stay in English.
 - **Daily capacity** (15 leads) caps the visible work queue so reps see a realistic list, not 80 items.
 
 ---
